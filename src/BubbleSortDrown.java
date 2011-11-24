@@ -21,7 +21,7 @@ public final class BubbleSortDrown extends AbstractSort {
      * @param right right bound
      */
     @Override
-    protected void sortHelper(int[] array, final int left, final int right) {
+    protected void sortHelper(final int[] array, int left, final int right) {
         boolean swapped;
 
         do {
@@ -35,6 +35,7 @@ public final class BubbleSortDrown extends AbstractSort {
                     swapped = true;
                 }
             }
+            ++left;
         } while (swapped);
     }
 }

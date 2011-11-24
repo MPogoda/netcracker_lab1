@@ -21,7 +21,7 @@ public final class BubbleSortPop extends AbstractSort {
      * @param right right bound
      */
     @Override
-    protected void sortHelper(int[] array, final int left, final int right) {
+    protected void sortHelper(final int[] array, final int left, int right) {
         boolean swapped;
 
         do {
@@ -34,6 +34,7 @@ public final class BubbleSortPop extends AbstractSort {
                     swapped = true;
                 }
             }
+            --right;
         } while (swapped);
     }
 }

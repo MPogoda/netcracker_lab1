@@ -20,8 +20,8 @@ public final class MergeSort extends AbstractSort {
      * @param middle the right bound of first array & the left bound of second array
      * @param right  the right bound of second array
      */
-    private void merge(int[] array, final int left, final int middle, final int right) {
-        int[] temp = new int[right - left + 1];
+    private void merge(final int[] array, final int left, final int middle, final int right) {
+        final int[] temp = new int[right - left + 1];
 
         System.arraycopy(array, left, temp, 0, right - left + 1);
 
@@ -29,7 +29,7 @@ public final class MergeSort extends AbstractSort {
         int j = middle + 1 - left;
         int k = left;
         while ((i <= (middle - left)) && (j <= (right - left))) {
-            if (temp[i] <= temp[j]) {
+            if (temp[i] < temp[j]) {
                 array[k++] = temp[i++];
             } else {
                 array[k++] = temp[j++];
@@ -50,7 +50,7 @@ public final class MergeSort extends AbstractSort {
      * @param right right bound
      */
     @Override
-    void sortHelper(int[] array, final int left, final int right) {
+    void sortHelper(final int[] array, final int left, final int right) {
         if (left < right) {
             final int mid = (left + right) >> 1;
             sortHelper(array, left, mid);

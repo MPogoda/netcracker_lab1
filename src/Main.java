@@ -1,5 +1,8 @@
 package netcracker.lab1;
 
+// dima.halushko@ukr.net
+// Tu16_14_Pogoda
+
 import org.jetbrains.annotations.NotNull;
 
 import java.io.FileNotFoundException;
@@ -26,7 +29,7 @@ final public class Main {
     /**
      * Maximum number in arrays
      */
-    private final static int MAX_NUM = 100000;
+    private final static int MAX_NUM = Integer.MAX_VALUE;
     /**
      * Maximum length of array
      */
@@ -35,40 +38,48 @@ final public class Main {
     /**
      * Generate sorted array (each element (except last) have larger successor
      *
-     * @param result where the resulting array will be stored
-     */
-    private static void generateSortedArray(final int[] result) {
+     * @return sorted array of size MAX_SIZE
+    */
+    private static int[] generateSortedArray() {
+        final int[] result = new int[MAX_SIZE];
         final Random generator = new Random(System.nanoTime());
         result[0] = 0;
-        for (int i = 1; i < Main.MAX_SIZE; ++i) {
+        for (int i = 1; i < MAX_SIZE; ++i) {
             result[i] = generator.nextInt(MAX_DIFF) + result[i - 1];
         }
+
+        return result;
     }
 
     /**
      * generate the array sorted in reverse way (each element (except last) have smaller successor)
      *
-     * @param result resulting array
-     * @throws IllegalArgumentException thrown if size < 1
+     * @return array of size MAX_SIZE
      */
-    private static void generateReverseSortedArray(final int[] result) {
+    private static int[] generateReverseSortedArray() {
+        final int[] result = new int[MAX_SIZE];
         final Random generator = new Random(System.nanoTime());
         result[Main.MAX_SIZE - 1] = 0;
         for (int i = Main.MAX_SIZE - 2; i >= 0; --i) {
             result[i] = result[i + 1] + generator.nextInt(MAX_DIFF);
         }
+
+        return result;
     }
 
     /**
      * Initialize array with random elements
      *
-     * @param result resulting array
+     * @return array of size MAX_SIZE
      */
-    private static void generateRandomArray(final int[] result) {
+    private static int[] generateRandomArray() {
+        final int[] result = new int[MAX_SIZE];
         final Random generator = new Random(System.nanoTime());
         for (int i = 0; i < Main.MAX_SIZE; ++i) {
             result[i] = generator.nextInt(MAX_NUM);
         }
+
+        return result;
     }
 
     /**
@@ -106,8 +117,7 @@ final public class Main {
      * @throws FileNotFoundException just in case
      */
     private static void caseA() throws FileNotFoundException {
-        final int[] array = new int[MAX_SIZE];
-        generateSortedArray(array);
+        final int[] array = generateSortedArray();
         AbstractSort sortMethod;
 
         System.setOut(new PrintStream("caseA_AS"));
@@ -149,7 +159,7 @@ final public class Main {
      */
     private static void benchmarkCaseB(final int[] array, @NotNull final AbstractSort sortMethod) {
         final Random generator = new Random(System.nanoTime());
-        final int[] arrayCopy = new int[MAX_SIZE];
+        final int [] arrayCopy = new int[MAX_SIZE];
         System.arraycopy(array, 0, arrayCopy, 0, MAX_SIZE);
 
         for (int i = MAX_SIZE - 1; i > 0; --i) {
@@ -167,9 +177,8 @@ final public class Main {
      * @throws FileNotFoundException just in case
      */
     private static void caseB() throws FileNotFoundException {
-        final int[] array = new int[MAX_SIZE];
+        final int[] array = generateReverseSortedArray();
         AbstractSort sortMethod;
-        generateSortedArray(array);
 
         System.setOut(new PrintStream("caseB_AS"));
         sortMethod = new AbstractSort();
@@ -208,8 +217,7 @@ final public class Main {
      * @throws FileNotFoundException just in case
      */
     private static void caseC() throws FileNotFoundException {
-        final int[] array = new int[MAX_SIZE];
-        generateReverseSortedArray(array);
+        final int[] array = generateReverseSortedArray();
         AbstractSort sortMethod;
 
         System.setOut(new PrintStream("caseC_AS"));
@@ -250,9 +258,8 @@ final public class Main {
      * @throws FileNotFoundException just in case
      */
     private static void caseD() throws FileNotFoundException {
-        final int[] array = new int[MAX_SIZE];
+        final int[] array = generateRandomArray();
         AbstractSort sortMethod;
-        generateRandomArray(array);
 
         System.setOut(new PrintStream("caseD_AS"));
         sortMethod = new AbstractSort();

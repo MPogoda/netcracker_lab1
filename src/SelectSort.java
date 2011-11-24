@@ -20,7 +20,7 @@ public final class SelectSort extends AbstractSort {
      * @param right right bound
      */
     @Override
-    protected void sortHelper(int[] array, final int left, final int right) {
+    protected void sortHelper(final int[] array, final int left, final int right) {
         for (int i = left; i < right; ++i) {
             int min = array[i];
             int pos = i;

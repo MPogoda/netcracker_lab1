@@ -26,8 +26,8 @@ public class AbstractSort {
      */
     @NotNull
     final public int[] sort(@NotNull final int[] _array, final int length) {
-        int[] array = new int[_array.length];
-        System.arraycopy(_array, 0, array, 0, array.length);
+        final int[] array = new int[length];
+        System.arraycopy(_array, 0, array, 0, length);
 
         sortHelper(array, 0, length - 1);
 
@@ -46,7 +46,7 @@ public class AbstractSort {
      * @param left  left bound
      * @param right right bound
      */
-    void sortHelper(int[] array, final int left, final int right) {
+    void sortHelper(final int[] array, final int left, final int right) {
         Arrays.sort(array, left, right + 1);
     }
 }

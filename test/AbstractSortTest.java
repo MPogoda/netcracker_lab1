@@ -1,14 +1,12 @@
 package netcracker.lab1.test;
 
 import netcracker.lab1.AbstractSort;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Random;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,7 +28,7 @@ public class AbstractSortTest {
     @Before
     public void setUp() throws Exception {
         array = new int[SIZE];
-        Random generator = new Random();
+        Random generator = new Random(System.nanoTime());
         for (int i = 0; i < SIZE; ++i) {
             array[i] = generator.nextInt(MAX);
         }
@@ -43,7 +41,7 @@ public class AbstractSortTest {
 
     @Test
     public void itDoesNotChangeLength() {
-        Assert.assertEquals(sortMethod.sort(array).length, array.length);
+        assertEquals(sortMethod.sort(array).length, array.length);
     }
 
     @Test
@@ -59,7 +57,7 @@ public class AbstractSortTest {
 
     @Test
     public void itDoesNotChangeInputArray() {
-        int[] _arr = new int[SIZE];
+        final int[] _arr = new int[SIZE];
         System.arraycopy(array, 0, _arr, 0, array.length);
         sortMethod.sort(array);
         for (int i = 0; i < SIZE; ++i) {

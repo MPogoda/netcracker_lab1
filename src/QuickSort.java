@@ -20,10 +20,10 @@ public final class QuickSort extends AbstractSort {
      * @param right right bound
      */
     @Override
-    void sortHelper(int[] array, final int left, final int right) {
+    void sortHelper(final int[] array, final int left, final int right) {
         int i = left;
         int j = right;
-        int mid = array[(right + left) >> 1];
+        final int mid = array[(right + left) >> 1];
 
         while (i <= j) {
             while (array[i] < mid) ++i;
