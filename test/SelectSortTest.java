@@ -10,6 +10,9 @@ import org.junit.Before;
  * Time: 09:02
  * <p/>
  * SelectSort Test. Nothing to say here
+ *
+ * @author Michael Pogoda
+ * @version 0.0.1
  */
 public final class SelectSortTest extends AbstractSortTest {
     @Before

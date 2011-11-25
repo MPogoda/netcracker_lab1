@@ -1,5 +1,11 @@
 package netcracker.lab1;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.ListIterator;
+
 /**
  * Created by IntelliJ IDEA.
  * User: mpogoda
@@ -9,32 +15,39 @@ package netcracker.lab1;
  * Class that implements Bubble sort with greater element popping up.
  *
  * @author Michael Pogoda
- * @version 0.0.2
+ * @version 0.1.2
  */
 public final class BubbleSortPop extends AbstractSort {
     /**
-     * Sort elements in array, located between left&right indices
+     * Sort elements in list, located between left&right indices
      * using bubble sort. Greater element is popping
      *
-     * @param array array to be sorted
+     * @param list  list to be sorted
      * @param left  left bound
      * @param right right bound
      */
     @Override
-    protected void sortHelper(final int[] array, final int left, int right) {
+    <Type extends Comparable<Type>>
+    void sortHelper(@NotNull final ArrayList<Type> list, final int left, int right) {
         boolean swapped;
 
         do {
             swapped = false;
+
+            final ListIterator<Type> iterator = list.listIterator(left);
+            Type current = iterator.next();
+            Type next;
+
             for (int i = left; i < right; ++i) {
-                if (array[i] > array[i + 1]) {
-                    final int temp = array[i];
-                    array[i] = array[i + 1];
-                    array[i + 1] = temp;
+                next = iterator.next();
+                if (current.compareTo(next) == 1) {
+                    Collections.swap(list, i, i + 1);
                     swapped = true;
+                } else {
+                    current = next;
                 }
             }
-            --right;
+            --right; // we don't have to look @ this element cause it's on its place
         } while (swapped);
     }
 }

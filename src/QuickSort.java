@@ -1,5 +1,11 @@
 package netcracker.lab1;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.ListIterator;
+
 /**
  * Created by IntelliJ IDEA.
  * User: mpogoda
@@ -9,37 +15,40 @@ package netcracker.lab1;
  * Implements quick sort with pivot in them middle of array
  *
  * @author Michael Pogoda
- * @version 0.0.3
+ * @version 0.3.3
  */
 public final class QuickSort extends AbstractSort {
     /**
-     * Sort array using quickSort
+     * Sort list using quickSort
      *
-     * @param array array to be sorted
-     * @param left  left bound
-     * @param right right bound
+     * @param <Type> Instance of Comparable<Type>
+     * @param list   list to be sorted
+     * @param left   left bound
+     * @param right  right bound
      */
     @Override
-    void sortHelper(final int[] array, final int left, final int right) {
+    <Type extends Comparable<Type>>
+    void sortHelper(@NotNull final ArrayList<Type> list, final int left, final int right) {
+
+        final ListIterator<Type> leftIterator = list.listIterator(left);
+        final ListIterator<Type> rightIterator = list.listIterator(right + 1);
         int i = left;
         int j = right;
-        final int mid = array[(right + left) >> 1];
+        final Type mid = list.get((right + left) >> 1);
 
         while (i <= j) {
-            while (array[i] < mid) ++i;
-            while (array[j] > mid) --j;
+            while (leftIterator.next().compareTo(mid) == -1) ++i;
+            while (rightIterator.previous().compareTo(mid) == 1) --j;
             if (i <= j) {
-                final int temp = array[j];
-                array[j--] = array[i];
-                array[i++] = temp;
+                Collections.swap(list, i++, j--);
             }
         }
 
         if (left < (i - 1)) {
-            sortHelper(array, left, i - 1);
+            sortHelper(list, left, i - 1);
         }
         if (i < right) {
-            sortHelper(array, i, right);
+            sortHelper(list, i, right);
         }
     }
 }

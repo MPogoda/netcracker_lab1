@@ -1,9 +1,12 @@
 package netcracker.lab1.test;
 
 import netcracker.lab1.AbstractSort;
+import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.ListIterator;
 import java.util.Random;
 
 import static org.junit.Assert.*;
@@ -17,20 +20,20 @@ import static org.junit.Assert.*;
  * Template for all sorting test.
  *
  * @author Michael Pogoda
- * @version 0.0.5
+ * @version 0.2.5
  */
 public class AbstractSortTest {
-    private int[] array;
+    private ArrayList<Integer> list;
     private final static int MAX = 100;
     private final static int SIZE = 50;
     AbstractSort sortMethod; // can be overridden in ancestors
 
     @Before
     public void setUp() throws Exception {
-        array = new int[SIZE];
-        Random generator = new Random(System.nanoTime());
+        list = new ArrayList<>(SIZE);
+        @NotNull Random generator = new Random(System.nanoTime());
         for (int i = 0; i < SIZE; ++i) {
-            array[i] = generator.nextInt(MAX);
+            list.add(generator.nextInt(MAX));
         }
     }
 
@@ -41,28 +44,32 @@ public class AbstractSortTest {
 
     @Test
     public void itDoesNotChangeLength() {
-        assertEquals(sortMethod.sort(array).length, array.length);
+        assertEquals(sortMethod.sort(list).size(), list.size());
     }
 
     @Test
     public void itSorts() {
-        final int[] outputArray = sortMethod.sort(array);
-        for (int i = 0; i < SIZE - 1; ++i) {
-            if (outputArray[i] > outputArray[i + 1]) {
-                fail("Array isn't sorted. Oops");
+        @NotNull final ArrayList<Integer> outputArray = sortMethod.sort(list);
+        ListIterator<Integer> iterator = outputArray.listIterator();
+        int current = iterator.next();
+        int next;
+        while (iterator.hasNext()) {
+            next = iterator.next();
+            if (current > next) {
+                fail("List isn't sorted. OOPS");
             }
+            current = next;
         }
         assertTrue(true);
     }
 
     @Test
     public void itDoesNotChangeInputArray() {
-        final int[] _arr = new int[SIZE];
-        System.arraycopy(array, 0, _arr, 0, array.length);
-        sortMethod.sort(array);
-        for (int i = 0; i < SIZE; ++i) {
-            if (array[i] != _arr[i]) {
-                fail("Input array have been changed!");
+        final ListIterator<Integer> iteratorCopy = (new ArrayList<>(list)).listIterator();
+        sortMethod.sort(list);
+        for (@NotNull Integer element : list) {
+            if (!element.equals(iteratorCopy.next())) {
+                fail("Input list have been changed!");
             }
         }
         assertTrue(true);

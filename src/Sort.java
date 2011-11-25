@@ -5,7 +5,7 @@ package netcracker.lab1;
  * User: mpogoda
  * Date: 22/11/11
  * Time: 17:08
- *
+ * <p/>
  * Enum for all sorting methods
  *
  * @author Michael Pogoda
