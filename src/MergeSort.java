@@ -1,11 +1,8 @@
 package netcracker.lab1;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.ListIterator;
-import java.util.NoSuchElementException;
+import static java.lang.System.arraycopy;
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,97 +13,65 @@ import java.util.NoSuchElementException;
  * Merge sort. Recursive algorithm.
  *
  * @author Michael Pogoda
- * @version 0.3.5
+ * @version 0.5.5
  */
-public final class MergeSort extends AbstractSort {
+public class MergeSort extends AbstractSort {
     /**
-     * Merge two sorted lists in one. These lists are located one by one.
+     * Merge two sorted parts of array in one.
      *
-     * @param <Type> Instance of Comparable<Type>
-     * @param list   Input&Output list
-     * @param left   the left bound of first list
-     * @param middle the right bound of first list & the left bound of second list
-     * @param right  the right bound of second list
+     * @param <Type> instance of Comparable<Type>
+     * @param array  array, where this sorted parts are located
+     * @param left   the left bound of first part
+     * @param middle the right bound of first part & the left bound of second part
+     * @param right  the right bound of second part
      */
-    private <Type extends Comparable<Type>>
-    void merge(@NotNull final ArrayList<Type> list, final int left, final int middle, final int right) {
+    @SuppressWarnings({"unchecked"})
+    <Type extends Comparable<Type>>
+    void merge(@NotNull final Type[] array, final int left, final int middle, final int right) {
+        @NotNull final Type[] leftArray = (Type[]) new Comparable[middle - left + 1];
+        @NotNull final Type[] rightArray = (Type[]) new Comparable[right - middle];
 
-        @NotNull final ArrayList<Type> leftList = new ArrayList<>(middle - left + 1);
-        @NotNull final ArrayList<Type> rightList = new ArrayList<>(right - middle);
-        for (Type elem : list.subList(left, middle + 1)) {
-            leftList.add(elem);
-        }
-        for (Type elem : list.subList(middle + 1, right + 1)) {
-            rightList.add(elem);
-        }
+        arraycopy(array, left, leftArray, 0, middle - left + 1);
+        arraycopy(array, middle + 1, rightArray, 0, right - middle);
 
-        // iterates over output part of array
-        final ListIterator<Type> subListIterator = list.subList(left, right + 1).listIterator();
-
-        @Nullable ListIterator<Type> leftIterator = leftList.listIterator();
-        @Nullable ListIterator<Type> rightIterator = rightList.listIterator();
-        Type currentLeft = leftIterator.next();
-        Type currentRight = rightIterator.next();
-
-        while (leftIterator != null && rightIterator != null) {
-            subListIterator.next();
-
-            if (currentLeft.compareTo(currentRight) == -1) {
-                subListIterator.set(currentLeft);
-                try {
-                    currentLeft = leftIterator.next();
-                } catch (NoSuchElementException ex) {
-                    leftIterator = null;
-                }
+        int i = 0; // current index of left part
+        int j = 0; // current index of right part
+        int k = left; // current index in resulting array
+        while ((i <= (middle - left)) && (j < (right - middle))) {
+            if (leftArray[i].compareTo(rightArray[j]) == -1) {
+                array[k++] = leftArray[i++];
             } else {
-                subListIterator.set(currentRight);
-                try {
-                    currentRight = rightIterator.next();
-                } catch (NoSuchElementException ex) {
-                    rightIterator = null;
-                }
+                array[k++] = rightArray[j++];
             }
         }
 
-        while (leftIterator != null) {
-            assert rightIterator == null : "right list isn't empty";
-            subListIterator.next();
-            subListIterator.set(currentLeft);
-            try {
-                currentLeft = leftIterator.next();
-            } catch (NoSuchElementException ex) {
-                leftIterator = null;
-            }
+        while (i <= (middle - left)) {
+            array[k++] = leftArray[i++];
         }
 
-        while (rightIterator != null) {
-            assert leftIterator == null : "left list isn't empty";
-            subListIterator.next();
-            subListIterator.set(currentRight);
-            try {
-                currentRight = rightIterator.next();
-            } catch (NoSuchElementException ex) {
-                rightIterator = null;
-            }
+        while (j < (right - middle)) {
+            array[k++] = rightArray[j++];
         }
     }
 
     /**
-     * Sort array using Merge sort.
-     * Divide array in two half, sort them and merge result
+     * Sort array using merge sort.
+     * Array is divided in two parts, each part is sorted using this method,
+     * and then these sorted parted are merged together
      *
-     * @param list  list to be sorted
-     * @param left  left bound
-     * @param right right bound
+     * @param array  array to be sorted
+     * @param left   left bound of array
+     * @param right  right bound of array
+     * @param <Type> any instance of Comparable<Type>
      */
     @Override
     <Type extends Comparable<Type>>
-    void sortHelper(@NotNull final ArrayList<Type> list, final int left, final int right) {
+    void sortHelper(@NotNull final Type[] array, final int left, final int right) {
         if (left < right) {
             final int mid = (left + right) >> 1;
-            sortHelper(list, left, mid);
-            sortHelper(list, mid + 1, right);
-            merge(list, left, mid, right);
+            sortHelper(array, left, mid);
+            sortHelper(array, mid + 1, right);
+            merge(array, left, mid, right);
         }
     }
 }

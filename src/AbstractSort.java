@@ -3,6 +3,7 @@ package netcracker.lab1;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -15,57 +16,90 @@ import java.util.List;
  * An abstract class for all sorting algorithms.
  *
  * @author Michael Pogoda
- * @version 0.1.2
+ * @version 0.4.2
  */
 public class AbstractSort {
     /**
-     * The only public method defined in this abstract class.
-     * Simply copy input List into ArrayList,
-     * process it with <i>sortHelper</i> and return this ArrayList.
+     * Simply copy inputList into array, process it with <i>sortHelper</i>
+     * and return sorted ArrayList.
      *
-     * @param <Type>    any comparable<Type> value
-     * @param inputList input list
-     * @param length    length of list to be sorted
-     * @return sorted ArrayList
+     * @param <Type>    instance of Comparable<Type>
+     * @param inputList Input list
+     * @param length    The length of list to be sorted
+     * @return sorted ArrayList<Type>
      */
     @NotNull
-    final public <Type extends Comparable<Type>>
+    @SuppressWarnings({"unchecked"}) //don't warning about Comparable -> Type cast
+    final <Type extends Comparable<Type>>
     ArrayList<Type> sort(@NotNull final List<Type> inputList, final int length) {
 
-        @NotNull ArrayList<Type> outputList = new ArrayList<>(length);
-        for (Type element : inputList.subList(0, length)) {
-            outputList.add(element);
-        }
+        @NotNull final Type[] array = (Type[]) new Comparable[length];
+        //noinspection SuspiciousSystemArraycopy
+        System.arraycopy(inputList.toArray(), 0, array, 0, length);
 
-        sortHelper(outputList, 0, length - 1);
+        sortHelper(array, 0, length - 1);
+
+        @NotNull ArrayList<Type> outputList = new ArrayList<>(length);
+        Collections.addAll(outputList, array);
 
         return outputList;
     }
 
     /**
-     * Simply calls sort method with second parameter equals to length of inputList
+     * Sort array of Integers using <i>sortMethod</i>
      *
-     * @param inputList input list to be sorted
-     * @param <Type>    any Comparable<Type>
-     * @return sorted ArrayList
+     * @param inputArray array to be sorted
+     * @param length     length of inputArray
+     * @return sorted array of Integers
      */
     @NotNull
-    final public <Type extends Comparable<Type>>
-    ArrayList<Type> sort(@NotNull final List<Type> inputList) {
+    final public Integer[] sort(@NotNull final Integer[] inputArray, final int length) {
+        @NotNull final Integer[] array = new Integer[length];
+        System.arraycopy(inputArray, 0, array, 0, length);
 
-        return sort(inputList, inputList.size());
+        sortHelper(array, 0, length - 1);
+
+        return array;
     }
 
     /**
-     * Abstract method to be reimplemented in ancestors.
-     * Here it uses Collections.sort method
+     * Proxy to Integer[] sort(Integer[], int).
      *
-     * @param list  list to be sorted
-     * @param left  left bound
-     * @param right right bound
+     * @param inputArray array to be sorted
+     * @return sorted array of Integer
+     */
+    @NotNull
+    final public Integer[] sort(@NotNull final Integer[] inputArray) {
+        return sort(inputArray, inputArray.length);
+    }
+
+    /**
+     * Proxy to ArrayList<Type> sort(List<Type>, int)
+     *
+     * @param inputList list to be sorted
+     * @param <Type>    any Comparable<Type>
+     * @return sorted ArrayList<Type>
+     */
+    @SuppressWarnings({"UnusedDeclaration"}) //stop warning me, it can be used
+    @NotNull
+    final public <Type extends Comparable<Type>>
+    ArrayList<Type> sort(@NotNull final List<Type> inputList) {
+        return sort(inputList, inputList.size());
+    }
+
+
+    /**
+     * Abstract method to be reimplemented in ancestors.
+     * Here it uses standard sort method from java.util.Arrays
+     *
+     * @param array  array to be sorted
+     * @param left   left bound
+     * @param right  right bound
+     * @param <Type> any Comparable<Type> instance
+     * @see java.util.Arrays
      */
     <Type extends Comparable<Type>>
-    void sortHelper(final ArrayList<Type> list, final int left, final int right) {
-        Collections.sort(list);
+    void sortHelper(@NotNull final Type[] array, final int left, final int right) {
+        Arrays.sort(array, left, right + 1);
     }
 }

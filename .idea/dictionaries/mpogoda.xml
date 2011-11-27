@@ -2,10 +2,14 @@
   <dictionary name="mpogoda">
     <words>
       <w>argv</w>
+      <w>arraycopy</w>
       <w>cked</w>
       <w>intelli</w>
       <w>mpogoda</w>
       <w>nathin</w>
+      <w>quicksort</w>
+      <w>stdout</w>
+      <w>subarrays</w>
     </words>
   </dictionary>
 </component>

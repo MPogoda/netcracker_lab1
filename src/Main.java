@@ -7,8 +7,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.ListIterator;
 import java.util.Random;
 
 /**
@@ -38,269 +36,183 @@ final public class Main {
     private final static int MAX_SIZE = 1000;
 
     /**
-     * Generate sorted ArrayList (each element (except last) have larger successor
+     * Generate sorted array (each element (except last) have larger successor
      *
-     * @return sorted ArrayList of size MAX_SIZE
+     * @return sorted array of size MAX_SIZE
      */
     @NotNull
-    private static ArrayList<Integer> generateSortedArray() {
-        @NotNull final ArrayList<Integer> result = new ArrayList<>(MAX_SIZE);
+    private static Integer[] generateSortedArray() {
+        @NotNull final Integer[] result = new Integer[MAX_SIZE];
         @NotNull final Random generator = new Random(System.nanoTime());
-        result.add(0);
-        int current = 0;
+        Integer current = 0;
+        result[0] = current;
         for (int i = 1; i < MAX_SIZE; ++i) {
             current += generator.nextInt(MAX_DIFF);
-            result.add(current);
+            result[i] = current;
         }
 
         return result;
     }
 
     /**
-     * generate the ArrayList sorted in reverse way (each element (except last) have smaller successor)
+     * generate the array sorted in reverse way (each element (except last) have smaller successor)
      *
-     * @return ArrayList of size MAX_SIZE
+     * @return array of size MAX_SIZE
      */
     @NotNull
-    private static ArrayList<Integer> generateReverseSortedArray() {
-        @NotNull final ArrayList<Integer> result = new ArrayList<>(MAX_SIZE);
+    private static Integer[] generateReverseSortedArray() {
+        @NotNull final Integer[] result = new Integer[MAX_SIZE];
         @NotNull final Random generator = new Random(System.nanoTime());
-        int current = MAX_NUM;
-        result.add(current);
-        for (int i = 1; i < MAX_NUM; ++i) {
-            current -= generator.nextInt(MAX_DIFF);
-            result.add(current);
+        Integer current = 0;
+        result[Main.MAX_SIZE - 1] = current;
+        for (int i = Main.MAX_SIZE - 2; i >= 0; --i) {
+            current += generator.nextInt(MAX_DIFF);
+            result[i] = current;
         }
 
         return result;
     }
 
     /**
-     * Initialize ArrayList with random elements
+     * Initialize array with random elements
      *
-     * @return ArrayList of size MAX_SIZE
+     * @return array of size MAX_SIZE
      */
     @NotNull
-    private static ArrayList<Integer> generateRandomArray() {
-        @NotNull final ArrayList<Integer> result = new ArrayList<>(MAX_SIZE);
+    private static Integer[] generateRandomArray() {
+        @NotNull final Integer[] result = new Integer[MAX_SIZE];
         @NotNull final Random generator = new Random(System.nanoTime());
-        for (int i = 0; i < MAX_SIZE; ++i) {
-            result.add(generator.nextInt(MAX_NUM));
+        for (int i = 0; i < Main.MAX_SIZE; ++i) {
+            result[i] = generator.nextInt(MAX_NUM);
         }
 
         return result;
     }
 
     /**
-     * Benchmark sortMethod on list
+     * Benchmark sortMethod on array
      *
-     * @param list       list to be sorted
+     * @param array      Array to be sorted
      * @param sortMethod Sorting method
-     * @param length     The length of list
-     * @return time sortMethod took to sort list in nanoseconds
+     * @param length     The length of array
+     * @return the time sortMethod took to sort array in nanoseconds
      */
-    private static long benchmark(@NotNull final ArrayList<Integer> list, @NotNull final AbstractSort sortMethod, final int length) {
+    private static long benchmark(@NotNull final Integer[] array, @NotNull final AbstractSort sortMethod,
+                                  final int length) {
         final long currentTime = System.nanoTime();
-        sortMethod.sort(list, length);
+        sortMethod.sort(array, length);
         return System.nanoTime() - currentTime;
     }
 
     /**
-     * Benchmark sortMethod on list, without changing any element in this list
+     * Benchmark sortMethod on all subarrays, started from 1 first element.
+     * No element are changed during benchmarking.
+     * All results are printed to stdout
      *
-     * @param list       list to be tested on
+     * @param array      array, which will be sorted
      * @param sortMethod sorting method
      */
-    private static void benchmarkWithoutChangeOfArray(@NotNull final ArrayList<Integer> list, @NotNull final AbstractSort sortMethod) {
+    private static void benchmarkWithoutChangeOfArray(@NotNull final Integer[] array, @NotNull final AbstractSort sortMethod) {
         for (int i = 1; i < MAX_SIZE; ++i) {
             System.out.print(i);
             System.out.print('\t');
-            System.out.println(benchmark(list, sortMethod, i));
+            System.out.println(benchmark(array, sortMethod, i));
             System.gc(); //I DO NOT WANT TO GC when BENCHMARKING
         }
     }
 
     /**
-     * Benchmark all sorting methods with sorted list
+     * cases ACD
+     * Simply call benchmarkWithoutChangeOfArray on every sortMethod
+     * and redirect output to file
+     *
+     * @param array      array to be sorted during benchmarking
+     * @param caseLetter case letter ('a', 'c' or 'd')
+     * @throws FileNotFoundException just in case
+     */
+    private static void benchmarkCaseACD(@NotNull final Integer[] array, final char caseLetter)
+            throws FileNotFoundException {
+        System.err.println("Benchmark case" + caseLetter);
+        for (Sort sortName : Sort.values()) {
+            System.err.println("Begin benchmark " + sortName.toString());
+            @NotNull AbstractSort sortMethod = SortFactory.getSort(sortName);
+
+            System.setOut(new PrintStream("case" + caseLetter + "_" + sortMethod.toString()));
+            benchmarkWithoutChangeOfArray(array, sortMethod);
+            System.out.close();
+
+            System.err.println("End benchmark " + sortMethod.toString());
+        }
+        System.err.println("End benchmark case" + caseLetter);
+    }
+
+    /**
+     * Benchmark all sorting methods with sorted array
      *
      * @throws FileNotFoundException just in case
      */
     private static void caseA() throws FileNotFoundException {
-        @NotNull final ArrayList<Integer> list = generateSortedArray();
-        AbstractSort sortMethod;
-
-        System.setOut(new PrintStream("caseA_AS"));
-        sortMethod = new AbstractSort();
-        benchmarkWithoutChangeOfArray(list, sortMethod);
-        System.out.close();
-
-        sortMethod = new BubbleSortDrown();
-        System.setOut(new PrintStream("caseA_BSD"));
-        benchmarkWithoutChangeOfArray(list, sortMethod);
-        System.out.close();
-
-        sortMethod = new BubbleSortPop();
-        System.setOut(new PrintStream("caseA_BSP"));
-        benchmarkWithoutChangeOfArray(list, sortMethod);
-        System.out.close();
-
-        sortMethod = new MergeSort();
-        System.setOut(new PrintStream("caseA_MS"));
-        benchmarkWithoutChangeOfArray(list, sortMethod);
-        System.out.close();
-
-        sortMethod = new QuickSort();
-        System.setOut(new PrintStream("caseA_QS"));
-        benchmarkWithoutChangeOfArray(list, sortMethod);
-        System.out.close();
-
-        sortMethod = new SelectSort();
-        System.setOut(new PrintStream("caseA_SS"));
-        benchmarkWithoutChangeOfArray(list, sortMethod);
-        System.out.close();
+        benchmarkCaseACD(generateSortedArray(), 'A');
     }
 
     /**
-     * Benchmark sortMethod on list, with changing last element to random element.
+     * Benchmark sortMethod on array, with changing last element to random element.
      *
-     * @param list       list, which will be sorted
+     * @param array      array, which will be sorted
      * @param sortMethod sorting method
      */
-    private static void benchmarkCaseB(@NotNull final ArrayList<Integer> list, @NotNull final AbstractSort sortMethod) {
+    private static void benchmarkArrayAndMethodForCaseB(@NotNull final Integer[] array, @NotNull final AbstractSort sortMethod) {
         @NotNull final Random generator = new Random(System.nanoTime());
-        @NotNull final ArrayList<Integer> listCopy = new ArrayList<>(list);
-        final ListIterator<Integer> iterator = listCopy.listIterator(MAX_SIZE);
+        @NotNull final Integer[] arrayCopy = new Integer[MAX_SIZE];
+        System.arraycopy(array, 0, arrayCopy, 0, MAX_SIZE);
 
         for (int i = MAX_SIZE - 1; i > 0; --i) {
-            iterator.previous();
-            iterator.set(generator.nextInt(MAX_NUM));
+            arrayCopy[i] = generator.nextInt(MAX_NUM);
             System.out.print(i);
             System.out.print('\t');
-            System.out.println(benchmark(listCopy, sortMethod, i));
+            System.out.println(benchmark(arrayCopy, sortMethod, i));
             System.gc();
         }
     }
 
     /**
-     * Benchmark all sorting methods on list, which are sorted, except last element
+     * Benchmark all sorting methods on arrays, which are sorted, except last element
      *
      * @throws FileNotFoundException just in case
      */
     private static void caseB() throws FileNotFoundException {
-        @NotNull final ArrayList<Integer> list = generateReverseSortedArray();
-        AbstractSort sortMethod;
+        @NotNull final Integer[] array = generateSortedArray();
 
-        System.setOut(new PrintStream("caseB_AS"));
-        sortMethod = new AbstractSort();
-        benchmarkCaseB(list, sortMethod);
-        System.out.close();
+        System.err.println("Benchmark caseB");
+        for (Sort sortName : Sort.values()) {
+            System.err.println("Begin benchmark " + sortName.toString());
+            @NotNull AbstractSort sortMethod = SortFactory.getSort(sortName);
 
-        sortMethod = new BubbleSortDrown();
-        System.setOut(new PrintStream("caseB_BSD"));
-        benchmarkCaseB(list, sortMethod);
-        System.out.close();
+            System.setOut(new PrintStream("caseB_" + sortMethod.toString()));
+            benchmarkArrayAndMethodForCaseB(array, sortMethod);
+            System.out.close();
 
-        sortMethod = new BubbleSortPop();
-        System.setOut(new PrintStream("caseB_BSP"));
-        benchmarkCaseB(list, sortMethod);
-        System.out.close();
-
-        sortMethod = new MergeSort();
-        System.setOut(new PrintStream("caseB_MS"));
-        benchmarkCaseB(list, sortMethod);
-        System.out.close();
-
-        sortMethod = new QuickSort();
-        System.setOut(new PrintStream("caseB_QS"));
-        benchmarkCaseB(list, sortMethod);
-        System.out.close();
-
-        sortMethod = new SelectSort();
-        System.setOut(new PrintStream("caseB_SS"));
-        benchmarkCaseB(list, sortMethod);
-        System.out.close();
+            System.err.println("End benchmark " + sortMethod.toString());
+        }
+        System.err.println("End benchmark caseB");
     }
 
     /**
-     * Benchmark all sorting methods on list, that sorted in reverse direction
+     * Benchmark all sorting methods on array, that sorted in reverse direction
      *
      * @throws FileNotFoundException just in case
      */
     private static void caseC() throws FileNotFoundException {
-        @NotNull final ArrayList<Integer> list = generateReverseSortedArray();
-        AbstractSort sortMethod;
-
-        System.setOut(new PrintStream("caseC_AS"));
-        sortMethod = new AbstractSort();
-        benchmarkWithoutChangeOfArray(list, sortMethod);
-        System.out.close();
-
-        sortMethod = new BubbleSortDrown();
-        System.setOut(new PrintStream("caseC_BSD"));
-        benchmarkWithoutChangeOfArray(list, sortMethod);
-        System.out.close();
-
-        sortMethod = new BubbleSortPop();
-        System.setOut(new PrintStream("caseC_BSP"));
-        benchmarkWithoutChangeOfArray(list, sortMethod);
-        System.out.close();
-
-        sortMethod = new MergeSort();
-        System.setOut(new PrintStream("caseC_MS"));
-        benchmarkWithoutChangeOfArray(list, sortMethod);
-        System.out.close();
-
-        sortMethod = new QuickSort();
-        System.setOut(new PrintStream("caseC_QS"));
-        benchmarkWithoutChangeOfArray(list, sortMethod);
-        System.out.close();
-
-        sortMethod = new SelectSort();
-        System.setOut(new PrintStream("caseC_SS"));
-        benchmarkWithoutChangeOfArray(list, sortMethod);
-        System.out.close();
-
+        benchmarkCaseACD(generateReverseSortedArray(), 'c');
     }
 
     /**
-     * Benchmark all sorting methods on random list
+     * Benchmark all sorting methods on random array
      *
      * @throws FileNotFoundException just in case
      */
     private static void caseD() throws FileNotFoundException {
-        @NotNull final ArrayList<Integer> list = generateRandomArray();
-        AbstractSort sortMethod;
-
-        System.setOut(new PrintStream("caseD_AS"));
-        sortMethod = new AbstractSort();
-        benchmarkWithoutChangeOfArray(list, sortMethod);
-        System.out.close();
-
-        sortMethod = new BubbleSortDrown();
-        System.setOut(new PrintStream("caseD_BSD"));
-        benchmarkWithoutChangeOfArray(list, sortMethod);
-        System.out.close();
-
-        sortMethod = new BubbleSortPop();
-        System.setOut(new PrintStream("caseD_BSP"));
-        benchmarkWithoutChangeOfArray(list, sortMethod);
-        System.out.close();
-
-        sortMethod = new MergeSort();
-        System.setOut(new PrintStream("caseD_MS"));
-        benchmarkWithoutChangeOfArray(list, sortMethod);
-        System.out.close();
-
-        sortMethod = new QuickSort();
-        System.setOut(new PrintStream("caseD_QS"));
-        benchmarkWithoutChangeOfArray(list, sortMethod);
-        System.out.close();
-
-        sortMethod = new SelectSort();
-        System.setOut(new PrintStream("caseD_SS"));
-        benchmarkWithoutChangeOfArray(list, sortMethod);
-        System.out.close();
-
+        benchmarkCaseACD(generateRandomArray(), 'd');
     }
 
     /**

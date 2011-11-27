@@ -2,10 +2,6 @@ package netcracker.lab1;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.ListIterator;
-
 /**
  * Created by IntelliJ IDEA.
  * User: mpogoda
@@ -15,39 +11,38 @@ import java.util.ListIterator;
  * Class that implements Bubble sort with greater element popping up.
  *
  * @author Michael Pogoda
- * @version 0.1.2
+ * @version 0.4.2
  */
-public final class BubbleSortPop extends AbstractSort {
+public class BubbleSortPop extends AbstractSort {
     /**
-     * Sort elements in list, located between left&right indices
-     * using bubble sort. Greater element is popping
+     * Sort array using bubble sort algorithm with greater element popping up
      *
-     * @param list  list to be sorted
-     * @param left  left bound
-     * @param right right bound
+     * @param array  array to be sorted
+     * @param left   left bound
+     * @param right  right bound
+     * @param <Type> any Comparable<Type> instance
      */
-    @Override
     <Type extends Comparable<Type>>
-    void sortHelper(@NotNull final ArrayList<Type> list, final int left, int right) {
-        boolean swapped;
+    void sortHelper(@NotNull final Type[] array, final int left, int right) {
+        boolean swapped; // have we changed something?
 
         do {
             swapped = false;
 
-            final ListIterator<Type> iterator = list.listIterator(left);
-            Type current = iterator.next();
+            Type current = array[left];
             Type next;
 
             for (int i = left; i < right; ++i) {
-                next = iterator.next();
+                next = array[i + 1];
                 if (current.compareTo(next) == 1) {
-                    Collections.swap(list, i, i + 1);
+                    array[i] = next;
+                    array[i + 1] = current;
                     swapped = true;
                 } else {
                     current = next;
                 }
             }
-            --right; // we don't have to look @ this element cause it's on its place
+            --right;
         } while (swapped);
     }
 }

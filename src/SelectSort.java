@@ -2,10 +2,6 @@ package netcracker.lab1;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.ListIterator;
-
 /**
  * Created by IntelliJ IDEA.
  * User: mpogoda
@@ -15,40 +11,36 @@ import java.util.ListIterator;
  * Select sort, always O(n^2)
  *
  * @author Michael Pogoda
- * @version 0.3.1
+ * @version 0.4.1
  */
 public final class SelectSort extends AbstractSort {
     /**
-     * Sort array using selectSort
+     * An implementation of select sort: go through all positions in array,
+     * find the element, that should be at this position and place it here.
      *
-     * @param <Type> instance of Comparable<Type>
-     * @param list   list to be sorted
+     * @param array  array to be sorted
      * @param left   left bound
      * @param right  right bound
+     * @param <Type> any instance of Comparable<Type>
      */
     @Override
     <Type extends Comparable<Type>>
-    void sortHelper(@NotNull final ArrayList<Type> list, int left, final int right) {
-
-        final ListIterator<Type> iterator = list.listIterator(left);
-        while (iterator.hasNext()) {
-
-            Type min = iterator.next();
-            int pos = left;
+    void sortHelper(@NotNull final Type[] array, final int left, final int right) {
+        for (int i = left; i < right; ++i) {
+            Type min = array[i];
+            int pos = i;
             // find minimum element after current
-            final ListIterator<Type> iterator1 = list.listIterator(iterator.nextIndex());
-            while (iterator1.hasNext()) {
-                Type a;
-                if ((a = iterator1.next()).compareTo(min) == -1) {
-                    min = a;
-                    pos = iterator1.previousIndex();
+            for (int j = i + 1; j <= right; ++j) {
+                if (array[j].compareTo(min) == -1) {
+                    min = array[j];
+                    pos = j;
                 }
             }
             // if there was element smaller than element we was looking for
-            if (pos != left) {
-                Collections.swap(list, left, pos);
+            if (pos != i) {
+                array[pos] = array[i];
+                array[i] = min;
             }
-            ++left;
         }
     }
 }

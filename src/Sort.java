@@ -17,5 +17,6 @@ public enum Sort {
     BUBBLE_SORT_POP,
     MERGE_SORT,
     QUICK_SORT,
-    SELECT_SORT
+    SELECT_SORT,
+    OPTIMIZED_MERGE_SORT
 }

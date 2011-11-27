@@ -1,7 +1,5 @@
 package netcracker.lab1;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * Created by IntelliJ IDEA.
  * User: mpogoda
@@ -20,11 +18,10 @@ public class SortFactory {
      *
      * @param sortName THE NAME
      * @return new instance of sorting method
-     * @throws IllegalArgumentException if some RADIATION BROKE MY PC
+     * @throws IllegalArgumentException JUST IN CASE
      * @see Sort
      */
-    @NotNull
-    public static AbstractSort getSort(@NotNull Sort sortName) throws IllegalArgumentException {
+    public static AbstractSort getSort(Sort sortName) throws IllegalArgumentException {
         switch (sortName) {
             case BUBBLE_SORT_DROWN:
                 return new BubbleSortDrown();
@@ -32,6 +29,8 @@ public class SortFactory {
                 return new BubbleSortPop();
             case MERGE_SORT:
                 return new MergeSort();
+            case OPTIMIZED_MERGE_SORT:
+                return new OptimizedMergeSort();
             case QUICK_SORT:
                 return new QuickSort();
             case SELECT_SORT:
@@ -39,7 +38,7 @@ public class SortFactory {
             case JAVA_SORT:
                 return new AbstractSort();
             default:
-                throw new IllegalArgumentException("HOW COULD THIS BE POSSIBLE");
+                throw new IllegalArgumentException("Y HAVE U DONE THAT");
         }
     }
 }

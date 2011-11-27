@@ -2,10 +2,6 @@ package netcracker.lab1;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.ListIterator;
-
 /**
  * Created by IntelliJ IDEA.
  * User: mpogoda
@@ -15,37 +11,35 @@ import java.util.ListIterator;
  * BubbleSort. The smaller element is drowning.
  *
  * @author Michael Pogoda
- * @version 0.1.1
+ * @version 0.4.1
  */
-public final class BubbleSortDrown extends AbstractSort {
+public class BubbleSortDrown extends AbstractSort {
+
     /**
-     * Sort elements in list, located between left&right indices
+     * Static implementation of bubble sort algorithm
+     * Sort elements in array, located between left&right indices
      * using bubble sort. Smaller element is drowning.
      *
-     * @param list  list to be sorted
-     * @param left  left bound
-     * @param right right bound
+     * @param <Type> any Comparable<Type> instance
+     * @param array  array to be sorted
+     * @param left   left bound
+     * @param right  right bound
      */
     @Override
     <Type extends Comparable<Type>>
-    void sortHelper(@NotNull final ArrayList<Type> list, int left, final int right) {
+    void sortHelper(@NotNull final Type[] array, int left, final int right) {
         boolean swapped;
 
         do {
-            // have we changed something
-            swapped = false;
-
-            // iterator moving right-to-left
-            final ListIterator<Type> iterator = list.listIterator(right + 1);
-            // current element
-            Type current = iterator.previous();
-            // element, located to the left
+            swapped = false; // have changed something in array?
+            Type current = array[right];
             Type previous;
+
             for (int i = right; i > left; --i) {
-                previous = iterator.previous();
-                // if left element greater than right
+                previous = array[i - 1];
                 if (previous.compareTo(current) == 1) {
-                    Collections.swap(list, i - 1, i);
+                    array[i - 1] = current;
+                    array[i] = previous;
                     swapped = true;
                 } else {
                     current = previous;

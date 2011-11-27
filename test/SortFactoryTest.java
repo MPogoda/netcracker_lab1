@@ -10,7 +10,7 @@ import static org.junit.Assert.assertTrue;
  * User: mpogoda
  * Date: 22/11/11
  * Time: 17:13
- * <p/>
+ *
  * TEST MY SORTFACTORY PLZ
  *
  * @author Michael Pogoda
