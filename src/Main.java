@@ -137,7 +137,7 @@ final public class Main {
             System.err.println("Begin benchmark " + sortName.toString());
             @NotNull AbstractSort sortMethod = SortFactory.getSort(sortName);
 
-            System.setOut(new PrintStream("case" + caseLetter + "_" + sortMethod.toString()));
+            System.setOut(new PrintStream("case" + caseLetter + "_" + sortName.toString()));
             benchmarkWithoutChangeOfArray(array, sortMethod);
             System.out.close();
 
@@ -188,7 +188,7 @@ final public class Main {
             System.err.println("Begin benchmark " + sortName.toString());
             @NotNull AbstractSort sortMethod = SortFactory.getSort(sortName);
 
-            System.setOut(new PrintStream("caseB_" + sortMethod.toString()));
+            System.setOut(new PrintStream("caseB_" + sortName.toString()));
             benchmarkArrayAndMethodForCaseB(array, sortMethod);
             System.out.close();
 
